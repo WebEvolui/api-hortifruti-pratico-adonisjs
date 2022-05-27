@@ -28,7 +28,6 @@ Route.post(
   }
 );
 
-Route.get("/auth", async ({ auth, response }: HttpContextContract) => {
-    return response.ok("somente usuários autenticados podem acessar");
-
-}).middleware("api");
+Route.get("/auth", async ({ response }: HttpContextContract) => {
+  return response.ok("somente usuários autenticados podem acessar");
+}).middleware("auth");
