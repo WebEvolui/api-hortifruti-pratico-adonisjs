@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@adonisjs/assembler": "^5.7.0",
+    "@faker-js/faker": "^7.1.0",
     "@japa/preset-adonis": "^1.0.16",
     "@japa/runner": "^2.0.8",
     "adonis-preset-ts": "^2.1.0",
