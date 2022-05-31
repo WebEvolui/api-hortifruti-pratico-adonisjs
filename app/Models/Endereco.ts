@@ -27,7 +27,7 @@ export default class Endereco extends BaseModel {
   public complemento: string | null;
 
   @hasOne(() => Cidade, {
-    localKey: "cidade_id",
+    localKey: "cidadeId",
     foreignKey: "id",
   })
   public cidade: HasOne<typeof Cidade>;

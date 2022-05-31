@@ -15,7 +15,7 @@ Route.get(
 Route.group(() => {
   Route.get("auth/me", "AuthController.me");
 
-  Route.resource("/enderecos", "EnderecosController.store").only([
+  Route.resource("/enderecos", "EnderecosController").only([
     "store",
     "index",
     "update",
