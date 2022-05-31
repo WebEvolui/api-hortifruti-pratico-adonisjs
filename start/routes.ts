@@ -22,6 +22,8 @@ Route.group(() => {
     "destroy",
   ]);
 
+  Route.get("/estabelecimento/pedidos", "EstabelecimentosController.pedidos");
+
   Route.put("/cliente", "ClientesController.update");
 }).middleware("auth");
 
