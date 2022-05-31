@@ -12,6 +12,8 @@ Route.get(
   "CidadesController.Estabelecimentos"
 );
 
+Route.get("/estabelecimentos/:id", "EstabelecimentosController.show");
+
 Route.group(() => {
   Route.get("auth/me", "AuthController.me");
 
