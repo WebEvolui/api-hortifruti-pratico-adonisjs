@@ -4,8 +4,6 @@ import Route from "@ioc:Adonis/Core/Route";
 Route.post("/login", "AuthController.login");
 Route.post("logout", "AuthController.logout");
 
-Route.post("/cliente/cadastro", "ClientesController.store");
-
 Route.get("/cidades", "CidadesController.index");
 Route.get(
   "/cidades/:id/estabelecimentos",
@@ -13,6 +11,8 @@ Route.get(
 );
 
 Route.get("/estabelecimentos/:id", "EstabelecimentosController.show");
+
+Route.post("/cliente/cadastro", "ClientesController.store");
 
 Route.group(() => {
   Route.get("auth/me", "AuthController.me");
