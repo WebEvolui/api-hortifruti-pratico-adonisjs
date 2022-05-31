@@ -37,4 +37,28 @@ export default class EnderecosController {
 
     return response.ok(getCliente.enderecos);
   }
+
+  public async update({ request, response, params }: HttpContextContract) {
+    const payload = await request.validate(CreateEditEnderecoValidator);
+    const endereco = await Endereco.findOrFail(params.id);
+
+    endereco.merge(payload);
+    await endereco.save();
+
+    return response.ok(endereco);
+  }
+
+  public async destroy({ response, params }: HttpContextContract) {
+    try {
+      const resp = await Endereco.query().where("id", params.id).delete();
+
+      if (resp.includes(1)) {
+        return response.noContent();
+      } else {
+        return response.notFound();
+      }
+    } catch {
+      return response.badRequest();
+    }
+  }
 }
