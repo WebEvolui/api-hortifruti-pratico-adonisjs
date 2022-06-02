@@ -26,6 +26,7 @@ Route.group(() => {
 
   Route.post("/pedidos", "PedidosController.store");
   Route.get("/pedidos", "PedidosController.index");
+  Route.get("/pedidos/:hash_id", "PedidosController.show");
 
   Route.get("/estabelecimento/pedidos", "EstabelecimentosController.pedidos");
 
