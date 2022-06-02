@@ -1,9 +1,13 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Database from "@ioc:Adonis/Lucid/Database";
+import CidadesEstabelecimento from "App/Models/CidadesEstabelecimento";
 import Cliente from "App/Models/Cliente";
 import Endereco from "App/Models/Endereco";
 import Pedido from "App/Models/Pedido";
 import PedidoEndereco from "App/Models/PedidoEndereco";
+import PedidoProduto from "App/Models/PedidoProduto";
+import PedidoStatus from "App/Models/PedidoStatus";
+import Produto from "App/Models/Produto";
 import CreatePedidoValidator from "App/Validators/CreatePedidoValidator";
 var randomstring = require("randomstring");
 
@@ -46,8 +50,63 @@ export default class PedidosController {
       });
 
       // Busca do custo de entrega e calcular valor total do pedido
-      
+      const estabCidade = await CidadesEstabelecimento.query()
+        .where("estabelecimento_id", payload.estabelecimento_id)
+        .where("cidade_id", endereco.cidadeId)
+        .first();
 
+      let valorTotal = 0;
+      for await (const produto of payload.produtos) {
+        const prod = await Produto.findByOrFail("id", produto.produto_id);
+        valorTotal += produto.quantidade * prod.preco;
+      }
+
+      valorTotal = estabCidade
+        ? valorTotal + estabCidade.custo_entrega
+        : valorTotal;
+
+      valorTotal = parseFloat(valorTotal.toFixed(2));
+
+      if (payload.troco_para != null && payload.troco_para < valorTotal) {
+        trx.rollback();
+        return response.badRequest(
+          "O valor do troco não pode ser menor que o valor total do pedido."
+        );
+      }
+
+      const pedido = await Pedido.create({
+        hash_id: hash_id,
+        cliente_id: cliente.id,
+        estabelecimento_id: payload.estabelecimento_id,
+        meio_pagamento_id: payload.meio_pageamento_id,
+        pedido_endereco_id: end.id,
+        valor: valorTotal,
+        troco_para: payload.troco_para,
+        custo_entrega: estabCidade ? estabCidade.custo_entrega : 0,
+        observacao: payload.observacao,
+      });
+
+      payload.produtos.forEach(async (produto) => {
+        let getProduto = await Produto.findByOrFail("id", produto.produto_id);
+
+        await PedidoProduto.create({
+          pedido_id: pedido.id,
+          produto_id: produto.produto_id,
+          valor: getProduto.preco,
+          quantidade: produto.quantidade,
+          observacao: produto.observacao,
+        });
+      });
+
+      await PedidoStatus.create({
+        pedido_id: pedido.id,
+        status_id: 1,
+      });
+
+      // Confirma a transação
+      await trx.commit();
+
+      return response.ok(pedido);
     } catch (error) {
       await trx.rollback();
       return response.badRequest("Something in the request is wrong");
