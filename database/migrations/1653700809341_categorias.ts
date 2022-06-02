@@ -11,7 +11,7 @@ export default class extends BaseSchema {
       table.string("posicao").notNullable();
       table.boolean("ativo").notNullable().defaultTo(true);
       table
-        .integer("estabelicimento_id")
+        .integer("estabelecimento_id")
         .notNullable()
         .unsigned()
         .references("id")
