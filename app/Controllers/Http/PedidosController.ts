@@ -78,7 +78,7 @@ export default class PedidosController {
         hash_id: hash_id,
         cliente_id: cliente.id,
         estabelecimento_id: payload.estabelecimento_id,
-        meio_pagamento_id: payload.meio_pageamento_id,
+        meio_pagamento_id: payload.meio_pagamento_id,
         pedido_endereco_id: end.id,
         valor: valorTotal,
         troco_para: payload.troco_para,
@@ -109,7 +109,7 @@ export default class PedidosController {
       return response.ok(pedido);
     } catch (error) {
       await trx.rollback();
-      return response.badRequest("Something in the request is wrong");
+      return response.badRequest("Something in the request is wrong " + error);
     }
   }
 
@@ -123,7 +123,7 @@ export default class PedidosController {
       .preload("pedido_status", (statusQuery) => {
         statusQuery.preload("status");
       })
-      .orderBy("pedido_id", "desc");
+      .orderBy("id", "desc");
 
     return response.ok(pedidos);
   }
