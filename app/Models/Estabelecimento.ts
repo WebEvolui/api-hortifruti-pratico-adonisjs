@@ -1,5 +1,6 @@
+import { BaseModel, column, hasMany, HasMany, manyToMany, ManyToMany } from "@ioc:Adonis/Lucid/Orm";
 import { DateTime } from "luxon";
-import { BaseModel, column, HasMany, hasMany, ManyToMany, manyToMany } from "@ioc:Adonis/Lucid/Orm";
+
 import Categoria from "./Categoria";
 import MeiosPagamento from "./MeiosPagamento";
 
@@ -32,7 +33,7 @@ export default class Estabelecimento extends BaseModel {
   public categorias: HasMany<typeof Categoria>;
 
   @manyToMany(() => MeiosPagamento, {
-    pivotTable: "estabelecimento_meios_pagamento",
+    pivotTable: "estabelecimentos_meios_pagamentos",
     localKey: "id",
     pivotForeignKey: "estabelecimento_id",
     relatedKey: "id",
