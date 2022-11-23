@@ -31,6 +31,14 @@ Route.group(() => {
   Route.get("/estabelecimento/pedidos", "EstabelecimentosController.pedidos");
 
   Route.put("/cliente", "ClientesController.update");
+
+  // Estabelecimentos
+  Route.resource("/estabelecimento/categorias", "CategoriasController").only([
+    "store",
+    "index",
+    "update",
+    "destroy",
+  ]);
 }).middleware("auth");
 
 Route.get("/", async () => {

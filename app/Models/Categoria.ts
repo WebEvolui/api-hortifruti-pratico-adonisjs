@@ -1,6 +1,6 @@
-import { DateTime } from "luxon";
-import { BaseModel, column, HasMany, hasMany } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, column, hasMany, HasMany } from "@ioc:Adonis/Lucid/Orm";
 import Produto from "App/Models/Produto";
+import { DateTime } from "luxon";
 
 export default class Categoria extends BaseModel {
   @column({ isPrimary: true })
@@ -10,7 +10,7 @@ export default class Categoria extends BaseModel {
   public nome: string;
 
   @column()
-  public descricao: string;
+  public descricao: string | null;
 
   @column()
   public posicao: number;
