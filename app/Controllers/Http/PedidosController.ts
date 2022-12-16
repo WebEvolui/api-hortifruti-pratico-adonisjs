@@ -8,7 +8,9 @@ import PedidoEndereco from "App/Models/PedidoEndereco";
 import PedidoProduto from "App/Models/PedidoProduto";
 import PedidoStatus from "App/Models/PedidoStatus";
 import Produto from "App/Models/Produto";
+import Status from "App/Models/Status";
 import CreatePedidoValidator from "App/Validators/CreatePedidoValidator";
+import UpdatePedidoValidator from "App/Validators/UpdatePedidoValidator";
 var randomstring = require("randomstring");
 
 export default class PedidosController {
@@ -150,5 +152,46 @@ export default class PedidosController {
     }
 
     return response.ok(pedido);
+  }
+
+  public async update({
+    params,
+    request,
+    bouncer,
+    response,
+  }: HttpContextContract) {
+    // Introducting bouncer
+    // await bouncer.authorize('UserIsEstabelecimento')
+
+    const payload = await request.validate(UpdatePedidoValidator);
+
+    const pedido = await Pedido.query()
+      .where("hash_id", params.hash_id)
+      .firstOrFail();
+    // await bouncer.with('PedidoPolicy').authorize('canUpdate', pedido)
+
+    const pedidoStatus = await PedidoStatus.query()
+      .select("status_id")
+      .where("pedido_id", pedido.id)
+      .orderBy("status_id", "desc")
+      .firstOrFail();
+
+    // Regras de negócio
+    // pedidoStatus.status_id == 4
+
+    if (payload.status_id <= pedidoStatus.status_id) {
+      return response.badRequest(
+        `Status enviado inválido. Status_id atual: ${pedidoStatus.status_id}`
+      );
+    }
+
+    const status = await Status.findOrFail(payload.status_id);
+
+    await PedidoStatus.create({
+      pedido_id: pedido.id,
+      status_id: payload.status_id,
+    });
+
+    return response.ok(`Pedido ${pedido.hash_id} foi ${status.status}`);
   }
 }
