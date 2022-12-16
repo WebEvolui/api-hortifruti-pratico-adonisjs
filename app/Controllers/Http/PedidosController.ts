@@ -161,14 +161,14 @@ export default class PedidosController {
     response,
   }: HttpContextContract) {
     // Introducting bouncer
-    // await bouncer.authorize('UserIsEstabelecimento')
+    await bouncer.authorize("UserIsEstabelecimento");
 
     const payload = await request.validate(UpdatePedidoValidator);
 
     const pedido = await Pedido.query()
       .where("hash_id", params.hash_id)
       .firstOrFail();
-    // await bouncer.with('PedidoPolicy').authorize('canUpdate', pedido)
+    await bouncer.with("PedidoPolicy").authorize("canUpdate", pedido);
 
     const pedidoStatus = await PedidoStatus.query()
       .select("status_id")
