@@ -29,6 +29,7 @@ Route.group(() => {
   Route.get("/pedidos/:hash_id", "PedidosController.show");
 
   Route.get("/estabelecimento/pedidos", "EstabelecimentosController.pedidos");
+  Route.post('/pedidos/:hash_id/statuses', 'PedidosController.update')
 
   Route.put("/cliente", "ClientesController.update");
 
