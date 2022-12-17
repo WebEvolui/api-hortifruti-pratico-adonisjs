@@ -1,5 +1,13 @@
-import { BaseModel, column, hasMany, HasMany, manyToMany, ManyToMany } from "@ioc:Adonis/Lucid/Orm";
+import {
+  BaseModel,
+  column,
+  hasMany,
+  HasMany,
+  manyToMany,
+  ManyToMany,
+} from "@ioc:Adonis/Lucid/Orm";
 import { DateTime } from "luxon";
+import Env from "@ioc:Adonis/Core/Env";
 
 import Categoria from "./Categoria";
 import MeiosPagamento from "./MeiosPagamento";
@@ -14,7 +22,9 @@ export default class Estabelecimento extends BaseModel {
   @column()
   public nome: string;
 
-  @column()
+  @column({
+    consume: (value) => (value == null ? value : Env.get("API_URL") + value),
+  })
   public logo: string | null;
 
   @column()

@@ -95,6 +95,40 @@ export default class EstabelecimentosController {
     await estabelecimento.save();
     await user.save();
 
-    return response.ok({ user, estabelecimento });
+    const getEstUpdated = await Estabelecimento.findByOrFail(
+      "user_id",
+      user.id
+    );
+
+    const data = {
+      id_estabelecimento: getEstUpdated.id,
+      nome: getEstUpdated.nome,
+      logo: getEstUpdated.logo,
+      online: getEstUpdated.online,
+      bloqueado: getEstUpdated.bloqueado,
+      email: user.email,
+    };
+
+    return response.ok(data);
+  }
+
+  public async removeLogo({ auth, bouncer, response }: HttpContextContract) {
+    await bouncer.authorize("UserIsEstabelecimento");
+
+    const userAuth = await auth.use("api").authenticate();
+    const estabelecimento = await Estabelecimento.findByOrFail(
+      "user_id",
+      userAuth.id
+    );
+
+    if (estabelecimento.logo) {
+      const file = estabelecimento.logo.split("/").filter(Boolean).pop();
+      if (file?.length) await Drive.delete(file);
+
+      estabelecimento.logo = null;
+      await estabelecimento.save();
+    }
+
+    return response.noContent();
   }
 }
