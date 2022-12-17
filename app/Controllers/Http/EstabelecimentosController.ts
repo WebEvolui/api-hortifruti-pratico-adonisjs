@@ -3,6 +3,7 @@ import Cidade from "App/Models/Cidade";
 import CidadesEstabelecimento from "App/Models/CidadesEstabelecimento";
 import Estabelecimento from "App/Models/Estabelecimento";
 import Pedido from "App/Models/Pedido";
+import UpdateEstabelecimentoValidator from "App/Validators/UpdateEstabelecimentoValidator";
 
 export default class EstabelecimentosController {
   public async pedidos({ response, auth }: HttpContextContract) {
@@ -59,5 +60,11 @@ export default class EstabelecimentosController {
       meios_pagamentos: estabelecimento.meiospagamentos,
       categorias: estabelecimento.categorias,
     });
+  }
+
+  public async update({ request, auth, bouncer, response }: HttpContextContract) {
+    await bouncer.authorize('UserIsEstabelecimento');
+
+    const payload = request.validate(UpdateEstabelecimentoValidator)
   }
 }
