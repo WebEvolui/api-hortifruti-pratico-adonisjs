@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
 import { BaseModel, column } from "@ioc:Adonis/Lucid/Orm";
+import Env from "@ioc:Adonis/Core/Env";
 
 export default class Produto extends BaseModel {
   @column({ isPrimary: true })
@@ -17,7 +18,9 @@ export default class Produto extends BaseModel {
   @column()
   public ativo: boolean;
 
-  @column()
+  @column({
+    consume: (value) => Env.get("API_URL") + value,
+  })
   public imagem: string | null;
 
   @column()

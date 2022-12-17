@@ -16,7 +16,6 @@ export default class EstabelecimentoSeeder extends BaseSeeder {
 
     await Estabelecimento.create({
       nome: "Estabelecimento",
-      logo: "https://webevolui.com.br/principal/images/web-evolui-logo.png",
       online: true,
       bloqueado: false,
       userId: user.id,
@@ -33,7 +32,6 @@ export default class EstabelecimentoSeeder extends BaseSeeder {
     for (let i = 2; i <= 20; i++) {
       await Estabelecimento.create({
         nome: `Estabelecimento ${i}`,
-        logo: `https://picsum.photos/id/${i}/200/200`,
         online: true,
         bloqueado: false,
         userId: i,
