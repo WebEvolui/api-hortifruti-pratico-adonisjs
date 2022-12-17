@@ -30,6 +30,7 @@ Route.group(() => {
 
   Route.get("/estabelecimento/pedidos", "EstabelecimentosController.pedidos");
   Route.post('/pedidos/:hash_id/statuses', 'PedidosController.update')
+  Route.patch('/estabelecimento', 'EstabelecimentosController.update')
 
   Route.put("/cliente", "ClientesController.update");
 

@@ -3,7 +3,9 @@ import Cidade from "App/Models/Cidade";
 import CidadesEstabelecimento from "App/Models/CidadesEstabelecimento";
 import Estabelecimento from "App/Models/Estabelecimento";
 import Pedido from "App/Models/Pedido";
+import User from "App/Models/User";
 import UpdateEstabelecimentoValidator from "App/Validators/UpdateEstabelecimentoValidator";
+import Drive from "@ioc:Adonis/Core/Drive";
 
 export default class EstabelecimentosController {
   public async pedidos({ response, auth }: HttpContextContract) {
@@ -62,9 +64,35 @@ export default class EstabelecimentosController {
     });
   }
 
-  public async update({ request, auth, bouncer, response }: HttpContextContract) {
-    await bouncer.authorize('UserIsEstabelecimento');
+  public async update({
+    request,
+    auth,
+    bouncer,
+    response,
+  }: HttpContextContract) {
+    await bouncer.authorize("UserIsEstabelecimento");
 
-    const payload = request.validate(UpdateEstabelecimentoValidator)
+    const payload = await request.validate(UpdateEstabelecimentoValidator);
+
+    const userAuth = await auth.use("api").authenticate();
+    const user = await User.findOrFail(userAuth.id);
+    const estabelecimento = await Estabelecimento.findByOrFail(
+      "user_id",
+      user.id
+    );
+
+    if (payload.nome !== undefined) estabelecimento.nome = payload.nome;
+    if (payload.online !== undefined) estabelecimento.online = payload.online;
+    if (payload.email !== undefined) user.email = payload.email;
+    if (payload.password !== undefined) user.password = payload.password;
+    if (payload.logo !== undefined) {
+      await payload.logo?.moveToDisk("./");
+      estabelecimento.logo = await Drive.getUrl(payload.logo?.fileName!);
+    }
+
+    await estabelecimento.save();
+    await user.save();
+
+    return response.ok({ user, estabelecimento });
   }
 }
