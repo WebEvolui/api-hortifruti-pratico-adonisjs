@@ -42,7 +42,10 @@ Route.group(() => {
     "destroy",
   ]);
 
-  Route.resource("/produtos", "ProdutosController").only([
+  Route.delete("/estabelecimento/produtos/:id/imagem", "ProdutosController.removeImagem");
+
+  Route.resource("/estabelecimento/produtos", "ProdutosController").only([
+    "index",
     "store",
     "update",
     "destroy",
