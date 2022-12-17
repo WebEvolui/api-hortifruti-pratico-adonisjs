@@ -29,8 +29,8 @@ Route.group(() => {
   Route.get("/pedidos/:hash_id", "PedidosController.show");
 
   Route.get("/estabelecimento/pedidos", "EstabelecimentosController.pedidos");
-  Route.post('/pedidos/:hash_id/statuses', 'PedidosController.update')
-  Route.patch('/estabelecimento', 'EstabelecimentosController.update')
+  Route.post("/pedidos/:hash_id/statuses", "PedidosController.statuses");
+  Route.patch("/estabelecimento", "EstabelecimentosController.update");
 
   Route.put("/cliente", "ClientesController.update");
 
@@ -38,6 +38,12 @@ Route.group(() => {
   Route.resource("/estabelecimento/categorias", "CategoriasController").only([
     "store",
     "index",
+    "update",
+    "destroy",
+  ]);
+
+  Route.resource("/produtos", "ProdutosController").only([
+    "store",
     "update",
     "destroy",
   ]);

@@ -154,7 +154,7 @@ export default class PedidosController {
     return response.ok(pedido);
   }
 
-  public async update({
+  public async statuses({
     params,
     request,
     bouncer,

@@ -4,7 +4,9 @@ import Estabelecimento from "App/Models/Estabelecimento";
 import CreateEditCategoriaValidator from "App/Validators/CreateEditCategoriaValidator";
 
 export default class CategoriasController {
-  public async store({ request, response, auth }: HttpContextContract) {
+  public async store({ request, response, auth, bouncer }: HttpContextContract) {
+    await bouncer.authorize("UserIsEstabelecimento")
+    
     const payload = await request.validate(CreateEditCategoriaValidator);
     const userAuth = await auth.use("api").authenticate();
     const estabelecimento = await Estabelecimento.findByOrFail(
@@ -23,7 +25,9 @@ export default class CategoriasController {
     return response.ok(categoria);
   }
 
-  public async index({ auth, response }: HttpContextContract) {
+  public async index({ auth, response, bouncer }: HttpContextContract) {
+    await bouncer.authorize("UserIsEstabelecimento")
+
     const userAuth = await auth.use("api").authenticate();
     const estabelecimento = await Estabelecimento.findByOrFail(
       "user_id",
@@ -38,7 +42,9 @@ export default class CategoriasController {
     return response.ok(categorias);
   }
 
-  public async update({ request, response, params }: HttpContextContract) {
+  public async update({ request, response, params, bouncer }: HttpContextContract) {
+    await bouncer.authorize("UserIsEstabelecimento")
+    
     const payload = await request.validate(CreateEditCategoriaValidator);
     const categoria = await Categoria.findOrFail(params.id);
 
@@ -48,7 +54,9 @@ export default class CategoriasController {
     return response.ok(categoria);
   }
 
-  public async destroy({ response, params }: HttpContextContract) {
+  public async destroy({ response, params, bouncer }: HttpContextContract) {
+    await bouncer.authorize("UserIsEstabelecimento")
+
     try {
       await Categoria.query()
         .where("id", params.id)
