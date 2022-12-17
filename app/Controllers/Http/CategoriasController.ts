@@ -4,9 +4,14 @@ import Estabelecimento from "App/Models/Estabelecimento";
 import CreateEditCategoriaValidator from "App/Validators/CreateEditCategoriaValidator";
 
 export default class CategoriasController {
-  public async store({ request, response, auth, bouncer }: HttpContextContract) {
-    await bouncer.authorize("UserIsEstabelecimento")
-    
+  public async store({
+    request,
+    response,
+    auth,
+    bouncer,
+  }: HttpContextContract) {
+    await bouncer.authorize("UserIsEstabelecimento");
+
     const payload = await request.validate(CreateEditCategoriaValidator);
     const userAuth = await auth.use("api").authenticate();
     const estabelecimento = await Estabelecimento.findByOrFail(
@@ -26,7 +31,7 @@ export default class CategoriasController {
   }
 
   public async index({ auth, response, bouncer }: HttpContextContract) {
-    await bouncer.authorize("UserIsEstabelecimento")
+    await bouncer.authorize("UserIsEstabelecimento");
 
     const userAuth = await auth.use("api").authenticate();
     const estabelecimento = await Estabelecimento.findByOrFail(
@@ -42,11 +47,18 @@ export default class CategoriasController {
     return response.ok(categorias);
   }
 
-  public async update({ request, response, params, bouncer }: HttpContextContract) {
-    await bouncer.authorize("UserIsEstabelecimento")
-    
+  public async update({
+    request,
+    response,
+    params,
+    bouncer,
+  }: HttpContextContract) {
+    await bouncer.authorize("UserIsEstabelecimento");
+
     const payload = await request.validate(CreateEditCategoriaValidator);
     const categoria = await Categoria.findOrFail(params.id);
+
+    await bouncer.with("CategoriaPolicy").authorize("isOwner", categoria);
 
     categoria.merge(payload);
     await categoria.save();
@@ -55,7 +67,10 @@ export default class CategoriasController {
   }
 
   public async destroy({ response, params, bouncer }: HttpContextContract) {
-    await bouncer.authorize("UserIsEstabelecimento")
+    await bouncer.authorize("UserIsEstabelecimento");
+
+    const categoria = await Categoria.findOrFail(params.id);
+    await bouncer.with("CategoriaPolicy").authorize("isOwner", categoria);
 
     try {
       await Categoria.query()
