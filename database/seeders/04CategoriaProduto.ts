@@ -16,7 +16,7 @@ export default class CategoriaProdutoSeeder extends BaseSeeder {
       await Produto.createMany([
         {
           nome: faker.commerce.productName(),
-          imagem: faker.image.food(300, 300),
+          imagem: null,
           descricao: faker.lorem.sentence(),
           preco: faker.datatype.number({ min: 5, max: 100, precision: 0.5 }),
           categoria_id: categoria.id,
@@ -25,7 +25,7 @@ export default class CategoriaProdutoSeeder extends BaseSeeder {
         },
         {
           nome: faker.commerce.productName(),
-          imagem: faker.image.food(300, 300),
+          imagem: null,
           descricao: faker.lorem.sentence(),
           preco: faker.datatype.number({ min: 5, max: 100, precision: 0.5 }),
           categoria_id: categoria.id,
@@ -34,7 +34,7 @@ export default class CategoriaProdutoSeeder extends BaseSeeder {
         },
         {
           nome: faker.commerce.productName(),
-          imagem: faker.image.food(300, 300),
+          imagem: null,
           descricao: faker.lorem.sentence(),
           preco: faker.datatype.number({ min: 5, max: 100, precision: 0.5 }),
           categoria_id: categoria.id,
